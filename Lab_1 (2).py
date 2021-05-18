@@ -32,14 +32,14 @@ def sc_pr(v1, v2):
     return v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2]
 
  #Получаем долготу, широту, высоту над Землёй спутника
-def get_stll_data(tle_1, tle_2, utc_time):
-    orb = Orbital("N", line1=tle_1, line2=tle_2)
+def get_stll_data(TLE_1, TLE_2, utc_time):
+    orb = Orbital("N", line1=TLE_1, line2=TLE_2)
     lo, lt, he = orb.get_lonlatalt(utc_time)
     return lo, la, he
 
 #Получаем TLE
-def get_TLE(file_with_tle, stll_name):
-    record = requests.get(file_with_tle, stream=True)
+def get_TLE(file_with_TLE, stll_name):
+    record = requests.get(file_with_TLE, stream=True)
     open('TLE.txt', 'wb').write(record.text)
     file = open('TLE.txt', 'r')
     temporary = file.read().split("\n")[:-1]
@@ -88,8 +88,8 @@ tmp_azimuth_data = []
 tmp_time_data = []
 
 
-list_tle =  get_TLE("https://celestrak.com/NORAD/elements/active.txt", "NOAA 19                 ")
-print(list_tle)
+list_TLE =  get_TLE("https://celestrak.com/NORAD/elements/active.txt", "NOAA 19                 ")
+print(list_TLE)
 
 print("Enter start date: MM HH DD MM YYYY: ")
 start_time = input().split()
@@ -105,7 +105,7 @@ end_time = datetime(end_time[4], end_time[3], end_time[2], end_time[1], end_time
 minutes = int((end_time - start_time).total_seconds() / 60)
 
 for i in range(minutes):
-    longitude, latitude, height = get_stll_data(list_tle[1], list_tle[2], start_time - timedelta(hours=3)) #перевод времени в международное
+    longitude, latitude, height = get_stll_data(list_TLE[1], list_TLE[2], start_time - timedelta(hours=3)) #перевод времени в международное
     start_time = start_time + timedelta(minutes=1)
     latitude_radians = deg_to_rad(latitude)
     longitude_radians = deg_to_rad(longitude)
