@@ -30,19 +30,19 @@ def scalar_pr(V1, V2):
     return V1[0] * V2[0] + V1[1] * V2[1] + V1[2] * V2[2]
 
 #Функция, задающая вектор посредством его координат и длины
-def set_V(x1, y1, z1, x2, y2, z2): #задать вектор(его координаты и длину)
+def set_V(x1, y1, z1, x2, y2, z2):
     V = [x2 - x1, y2 - y1, z2 - z1]
     V_length = m.sqrt(V[0] ** 2 + V[1] ** 2 + V[2] ** 2)
     return V, V_length
 
-
-def get_satellite_data(tle_1, tle_2, utc_time): #получение данных со спутника в виде долготы, широты, высоты над Землёй
+ #Получаем долготу, широту, высоту над Землёй спутника
+def get_satellite_data(tle_1, tle_2, utc_time):
     orb = Orbital("N", line1=tle_1, line2=tle_2)
     lon, lat, height_st = orb.get_lonlatalt(utc_time)
     return lon, lat, height_st
 
-
-def get_tle(file_with_tle, satellite_name): #получение TLE
+#Получаем TLE
+def get_tle(file_with_tle, satellite_name):
     record = requests.get(file_with_tle, stream=True)
     open('TLE.txt', 'wb').write(record.text)
     file = open('TLE.txt', 'r')
