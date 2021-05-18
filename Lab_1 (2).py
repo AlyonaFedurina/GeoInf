@@ -14,22 +14,22 @@ def deg_to_rad(value):
 def to_degrees(value):
     return (value * 180) / np.pi
 
-
-def to_decarts(r, theta, phi): #из сферических в декартовы координаты
+#Переводим из сферических в декартовы координаты
+def to_decarts(r, theta, phi):
     x = r * m.cos(theta) * m.cos(phi)
     y = r * m.cos(theta) * m.sin(phi)
     z = r * m.sin(theta)
     return x, y, z
 
-
-def angle_V1_V2(V1, V2, V1_length, V2_length): #угол между векторами
+#Считаем угол между векторами
+def angle_V1_V2(V1, V2, V1_length, V2_length):
     return m.acos((V1[0] * V2[0] + V1[1] * V2[1] + V1[2] * V2[2]) / (V1_length * V2_length))
 
-
-def scalar_pr(V1, V2): #скалярное произведение векторов
+#Считаем скалярное произведение векторов
+def scalar_pr(V1, V2):
     return V1[0] * V2[0] + V1[1] * V2[1] + V1[2] * V2[2]
 
-
+#Функция, задающая вектор посредством его координат и длины
 def set_V(x1, y1, z1, x2, y2, z2): #задать вектор(его координаты и длину)
     V = [x2 - x1, y2 - y1, z2 - z1]
     V_length = m.sqrt(V[0] ** 2 + V[1] ** 2 + V[2] ** 2)
