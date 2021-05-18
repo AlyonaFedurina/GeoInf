@@ -65,12 +65,12 @@ x_LK, y_LK, z_LK = to_decarts(R + h_LK, latitude_LK_R,
                               longitude_LK_R) #координаты ЛК в декартовой системе
 
 D = -(x_LK ** 2 + y_LK ** 2 + z_LK ** 2) #свободный член в уравнении касательной плоскости
-z_P = -D / z_LK #координата Z пересечения плоскости с осью апликат Земли
+z_P = -D / z_LK
 y_P = -D / y_LK
 x_P = -D / x_LK
-North_V, North_V_L = set_V(0, 0, z_P, x_LK, y_LK, z_LK)  #вектор, указывающий на север
-Normal_V, Normal_V_L = set_V(0, 0, 0, x_LK, y_LK, z_LK) #вектор нормали к плоскости
-East_V, East_V_L = set_V(0, 0, 0, North_V[1] * Normal_V[2] - Normal_V[1] * North_V[2], #вектор, указывающий на восток
+North_V, North_V_L = set_V(0, 0, z_P, x_LK, y_LK, z_LK)
+Normal_V, Normal_V_L = set_V(0, 0, 0, x_LK, y_LK, z_LK)
+East_V, East_V_L = set_V(0, 0, 0, North_V[1] * Normal_V[2] - Normal_V[1] * North_V[2],
                          -(North_V[0] * Normal_V[2] - North_V[2] * Normal_V[0]),
                          North_V[0] * Normal_V[1] - Normal_V[0] * North_V[1])
 
@@ -113,16 +113,16 @@ for i in range(minutes):
     array_x.append(x)
     array_y.append(y)
     array_z.append(z)
-    Sat_V, Sat_V_L = set_V(x_LK, y_LK, z_LK, x, y, z) #вектор ЛК -> Спутник
+    Sat_V, Sat_V_L = set_V(x_LK, y_LK, z_LK, x, y, z)
     dist_to_P = dist_to_PL(x_LK, y_LK, z_LK, x, y, z)
-    dist_to_Sat = ((x - x_LK) ** 2 + (y - y_LK) ** 2 + (z - z_LK) ** 2) ** 0.5 #расстояние от ЛК до спутника
+    dist_to_Sat = ((x - x_LK) ** 2 + (y - y_LK) ** 2 + (z - z_LK) ** 2) ** 0.5
     elevation = m.asin(dist_to_P / dist_to_Sat)
     azimuth = 0
     if elevation >= 0:
         Sat_V_N = [(Normal_V[0] * scalar_pr(Normal_V, Sat_V)) / (Normal_V_L ** 2),
                    (Normal_V[1] * scalar_pr(Normal_V, Sat_V)) / (Normal_V_L ** 2),
-                   (Normal_V[2] * scalar_pr(Normal_V, Sat_V)) / (Normal_V_L ** 2)] #проекция вектора спутника на вектор нормали
-        Sat_V_Pr, Sat_V_Pr_L = set_V(0, 0, 0, -Sat_V[0] + Sat_V_N[0], -Sat_V[1] + Sat_V_N[1], -Sat_V[2] + Sat_V_N[2]) #проекция вектора спутника на плоскость
+                   (Normal_V[2] * scalar_pr(Normal_V, Sat_V)) / (Normal_V_L ** 2)]
+        Sat_V_Pr, Sat_V_Pr_L = set_V(0, 0, 0, -Sat_V[0] + Sat_V_N[0], -Sat_V[1] + Sat_V_N[1], -Sat_V[2] + Sat_V_N[2])
         azimuth = angle_V1_V2(Sat_V_Pr, North_V, North_V_L, Sat_V_Pr_L)
         if 3 * np.pi / 2 >= angle_V1_V2(East_V, Sat_V_Pr, East_V_L, Sat_V_Pr_L) > np.pi / 2:
             azimuth = 2 * np.pi - azimuth
