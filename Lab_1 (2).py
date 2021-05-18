@@ -10,7 +10,7 @@ def deg_to_rad(value):
     return (value * np.pi) / 180
 
 #Переводим в градусы
-def rad_to_deg(value):
+def to_degrees(value):
     return (value * 180) / np.pi
 
 #Переводим из сферических в декартовы координаты
@@ -32,18 +32,20 @@ def sc_pr(v1, v2):
     return v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2]
 
  #Получаем долготу, широту, высоту над Землёй спутника
-def get_stll_lo.la.he(tle_1, tle_2, utc_time):
+def get_satellite_data(tle_1, tle_2, utc_time):
     orb = Orbital("N", line1=tle_1, line2=tle_2)
     lo, lt, he = orb.get_lonlatalt(utc_time)
     return lo, la, he
 
 #Получаем TLE
 def get_TLE(file_with_tle, stll_name):
+
     record = requests.get(file_with_tle, stream=True)
     open('TLE.txt', 'wb').write(record.text)
     file = open('TLE.txt', 'r')
     temporary = file.read().split("\n")[:-1]
     for i in range(len(temporary)):
+
         if temporary[i] == stll_name:
             return [s tll_name, temporary[i + 1], temporary[i + 2]]
 
@@ -51,6 +53,7 @@ def get_TLE(file_with_tle, stll_name):
 def dist_to_plane(x1, y1, z1, x2, y2, z2):
     dist = (x1 * x2 + y1 * y2 + z1 * z2 - x1 ** 2 - y1 ** 2 - z1 ** 2 ) / ((x1 ** 2 + y1 ** 2 + z1 ** 2) ** 0.5)
     return dist
+
 
 
 he_LK = 0.197 #высота ЛК над морем
@@ -65,6 +68,7 @@ z_pl = D / z_LK
 y_pl = D / y_LK
 x_pl = D / x_LK
 North_V, North_V_L = set_V(0, 0, z_pl, x_LK, y_LK, z_LK)
+
 Normal_V, Normal_V_L = set_V(0, 0, 0, x_LK, y_LK, z_LK)
 East_V, East_V_L = set_V(0, 0, 0, North_V[1] * Normal_V[2] - Normal_V[1] * North_V[2],
                          -(North_V[0] * Normal_V[2] - North_V[2] * Normal_V[0]),
@@ -83,6 +87,7 @@ arr_usual_time = []
 tmp_elevtion_data = []
 tmp_azimuth_data = []
 tmp_time_data = []
+
 
 list_tle = get_tle("https://celestrak.com/NORAD/elements/active.txt", "NOAA 19                 ")
 print(list_tle)
