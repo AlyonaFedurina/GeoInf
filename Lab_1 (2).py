@@ -20,7 +20,7 @@ def sph_to_dec(r, theta, phi):
 #Функция, задающая вектор посредством его координат и длины
 def set_v(x1, y1, z1, x2, y2, z2):
     v = [x2 - x1, y2 - y1, z2 - z1]
-    v_length = m.sqrt(V[0] ** 2 + V[1] ** 2 + V[2] ** 2)
+    v_length = m.sqrt(v[0] ** 2 + v[1] ** 2 + v[2] ** 2)
     return v, v_length
 
 #Считаем угол между векторами
@@ -34,7 +34,7 @@ def sc_pr(v1, v2):
  #Получаем долготу, широту, высоту над Землёй спутника
 def get_stll_data(TLE_1, TLE_2, utc_time):
     orb = Orbital("N", line1=TLE_1, line2=TLE_2)
-    lo, lt, he = orb.get_lonlatalt(utc_time)
+    lo, la, he = orb.get_lonlatalt(utc_time)
     return lo, la, he
 
 #Получаем TLE
@@ -46,7 +46,7 @@ def get_TLE(file_with_TLE, stll_name):
     for i in range(len(temporary)):
 
         if temporary[i] == stll_name:
-            return [s tll_name, temporary[i + 1], temporary[i + 2]]
+            return [stll_name, temporary[i + 1], temporary[i + 2]]
 
 #Посчитаем расстояние от точки вне сферы до касательной
 def dist_to_plane(x1, y1, z1, x2, y2, z2):
