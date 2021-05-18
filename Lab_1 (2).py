@@ -6,12 +6,12 @@ from pyorbital.orbital import Orbital
 from datetime import datetime, timedelta
 import matplotlib.pyplot as plt
 
-
-def deg_to_rad(value): #перевод в радианы
+#Переводим в радианы
+def deg_to_rad(value):
     return (value * np.pi) / 180
 
-
-def to_degrees(value): #перевод в градусы
+#Переводим в градусы
+def to_degrees(value):
     return (value * 180) / np.pi
 
 
