@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 import matplotlib.pyplot as plt
 
 
-def to_radians(value): #перевод в радианы
+def deg_to_rad(value): #перевод в радианы
     return (value * np.pi) / 180
 
 
