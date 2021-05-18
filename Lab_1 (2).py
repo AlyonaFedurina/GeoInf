@@ -30,19 +30,19 @@ def sc_pr(V1, V2):
     return V1[0] * V2[0] + V1[1] * V2[1] + V1[2] * V2[2]
 
 #Функция, задающая вектор посредством его координат и длины
-def set_V(x1, y1, z1, x2, y2, z2):
+def set_v(x1, y1, z1, x2, y2, z2):
     V = [x2 - x1, y2 - y1, z2 - z1]
     V_length = m.sqrt(V[0] ** 2 + V[1] ** 2 + V[2] ** 2)
     return V, V_length
 
  #Получаем долготу, широту, высоту над Землёй спутника
-def get_satellite_data(tle_1, tle_2, utc_time):
+def get_stll_lo.la.he(tle_1, tle_2, utc_time):
     orb = Orbital("N", line1=tle_1, line2=tle_2)
     lon, lat, height_st = orb.get_lonlatalt(utc_time)
     return lon, lat, height_st
 
 #Получаем TLE
-def get_tle(file_with_tle, satellite_name):
+def get_TLE(file_with_tle, satellite_name):
     record = requests.get(file_with_tle, stream=True)
     open('TLE.txt', 'wb').write(record.text)
     file = open('TLE.txt', 'r')
@@ -52,7 +52,7 @@ def get_tle(file_with_tle, satellite_name):
             return [satellite_name, temporary[i + 1], temporary[i + 2]]
 
 
-def dist_to_PL(x1, y1, z1, x2, y2, z2): #расстояние до касательной к сфере плоскости от точки вне сферы
+def dist_to_plane(x1, y1, z1, x2, y2, z2): #расстояние до касательной к сфере плоскости от точки вне сферы
     D = -x1 ** 2 - y1 ** 2 - z1 ** 2
     dif = (x1 * x2 + y1 * y2 + z1 * z2 + D) / ((x1 ** 2 + y1 ** 2 + z1 ** 2) ** 0.5)
     return dif
