@@ -66,10 +66,10 @@ D = (x_LK ** 2 + y_LK ** 2 + z_LK ** 2) #свободный член в урав
 z_pl = D / z_LK
 y_pl = D / y_LK
 x_pl = D / x_LK
-North_V, North_V_L = set_V(0, 0, z_pl, x_LK, y_LK, z_LK)
+North_V, North_V_L = set_v(0, 0, z_pl, x_LK, y_LK, z_LK)
 
-Normal_V, Normal_V_L = set_V(0, 0, 0, x_LK, y_LK, z_LK)
-East_V, East_V_L = set_V(0, 0, 0, North_V[1] * Normal_V[2] - Normal_V[1] * North_V[2],
+Normal_V, Normal_V_L = set_v(0, 0, 0, x_LK, y_LK, z_LK)
+East_V, East_V_L = set_v(0, 0, 0, North_V[1] * Normal_V[2] - Normal_V[1] * North_V[2],
                          -(North_V[0] * Normal_V[2] - North_V[2] * Normal_V[0]),
                          North_V[0] * Normal_V[1] - Normal_V[0] * North_V[1])
 
@@ -88,7 +88,7 @@ tmp_azimuth_data = []
 tmp_time_data = []
 
 
-list_tle = get_tle("https://celestrak.com/NORAD/elements/active.txt", "NOAA 19                 ")
+list_tle =  get_TLE("https://celestrak.com/NORAD/elements/active.txt", "NOAA 19                 ")
 print(list_tle)
 
 print("Enter start date: MM HH DD MM YYYY: ")
@@ -105,28 +105,28 @@ end_time = datetime(end_time[4], end_time[3], end_time[2], end_time[1], end_time
 minutes = int((end_time - start_time).total_seconds() / 60)
 
 for i in range(minutes):
-    longitude, latitude, height = get_satellite_data(list_tle[1], list_tle[2], start_time - timedelta(hours=3)) #перевод времени в международное
+    longitude, latitude, height = get_stll_data(list_tle[1], list_tle[2], start_time - timedelta(hours=3)) #перевод времени в международное
     start_time = start_time + timedelta(minutes=1)
-    latitude_radians = to_radians(latitude)
-    longitude_radians = to_radians(longitude)
-    x, y, z = to_decarts(height + R, latitude_radians, longitude_radians)
+    latitude_radians = deg_to_rad(latitude)
+    longitude_radians = deg_to_rad(longitude)
+    x, y, z = sph_to_dec(height + R, latitude_radians, longitude_radians)
     array_x.append(x)
     array_y.append(y)
     array_z.append(z)
-    Sat_V, Sat_V_L = set_V(x_LK, y_LK, z_LK, x, y, z)
-    dist_to_P = dist_to_PL(x_LK, y_LK, z_LK, x, y, z)
+    Sat_V, Sat_V_L = set_v(x_LK, y_LK, z_LK, x, y, z)
+    dist_to_P = dist_to_plane(x_LK, y_LK, z_LK, x, y, z)
     dist_to_Sat = ((x - x_LK) ** 2 + (y - y_LK) ** 2 + (z - z_LK) ** 2) ** 0.5
     elevation = m.asin(dist_to_P / dist_to_Sat)
     azimuth = 0
     if elevation >= 0:
-        Sat_V_N = [(Normal_V[0] * scalar_pr(Normal_V, Sat_V)) / (Normal_V_L ** 2),
-                   (Normal_V[1] * scalar_pr(Normal_V, Sat_V)) / (Normal_V_L ** 2),
-                   (Normal_V[2] * scalar_pr(Normal_V, Sat_V)) / (Normal_V_L ** 2)]
-        Sat_V_Pr, Sat_V_Pr_L = set_V(0, 0, 0, -Sat_V[0] + Sat_V_N[0], -Sat_V[1] + Sat_V_N[1], -Sat_V[2] + Sat_V_N[2])
-        azimuth = angle_V1_V2(Sat_V_Pr, North_V, North_V_L, Sat_V_Pr_L)
-        if 3 * np.pi / 2 >= angle_V1_V2(East_V, Sat_V_Pr, East_V_L, Sat_V_Pr_L) > np.pi / 2:
+        Sat_V_N = [(Normal_V[0] * sc_pr(Normal_V, Sat_V)) / (Normal_V_L ** 2),
+                   (Normal_V[1] * sc_pr(Normal_V, Sat_V)) / (Normal_V_L ** 2),
+                   (Normal_V[2] * sc_pr(Normal_V, Sat_V)) / (Normal_V_L ** 2)]
+        Sat_V_Pr, Sat_V_Pr_L = set_v(0, 0, 0, -Sat_V[0] + Sat_V_N[0], -Sat_V[1] + Sat_V_N[1], -Sat_V[2] + Sat_V_N[2])
+        azimuth = angle_v1_v2(Sat_V_Pr, North_V, North_V_L, Sat_V_Pr_L)
+        if 3 * np.pi / 2 >= angle_v1_v2(East_V, Sat_V_Pr, East_V_L, Sat_V_Pr_L) > np.pi / 2:
             azimuth = 2 * np.pi - azimuth
-    elevation = to_degrees(elevation)
+    elevation = rad_to_deg(elevation)
     array_azimuth.append(azimuth)
 
     array_elevation.append(elevation)
@@ -146,7 +146,7 @@ for i in range(len(array_time)):
         temporary_time_data = []
 
 for i in range(len(array_usual_time)):
-    print("[ Time: ", array_usual_time[i][0], "] [ Azimuth: ", to_degrees(array_usual_azimuth[i][0]), "] [ Elevation: ",
+    print("[ Time: ", array_usual_time[i][0], "] [ Azimuth: ", rad_to_deg(array_usual_azimuth[i][0]), "] [ Elevation: ",
           max(array_usual_elevation[i]), "]")
 
 print(array_usual_elevation)
