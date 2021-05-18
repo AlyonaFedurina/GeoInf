@@ -10,7 +10,7 @@ def deg_to_rad(value):
     return (value * np.pi) / 180
 
 #Переводим в градусы
-def to_degrees(value):
+def rad_to_deg(value):
     return (value * 180) / np.pi
 
 #Переводим из сферических в декартовы координаты
@@ -24,7 +24,7 @@ def set_v(x1, y1, z1, x2, y2, z2):
     return v, v_length
 
 #Считаем угол между векторами
-def angle_v1.v2(v1, v2, v1_length, v2_length):
+def angle_v1_v2(v1, v2, v1_length, v2_length):
     return m.acos((v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2]) / (v1_length * v2_length))
 
 #Считаем скалярное произведение векторов
@@ -32,14 +32,13 @@ def sc_pr(v1, v2):
     return v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2]
 
  #Получаем долготу, широту, высоту над Землёй спутника
-def get_satellite_data(tle_1, tle_2, utc_time):
+def get_stll_data(tle_1, tle_2, utc_time):
     orb = Orbital("N", line1=tle_1, line2=tle_2)
     lo, lt, he = orb.get_lonlatalt(utc_time)
     return lo, la, he
 
 #Получаем TLE
 def get_TLE(file_with_tle, stll_name):
-
     record = requests.get(file_with_tle, stream=True)
     open('TLE.txt', 'wb').write(record.text)
     file = open('TLE.txt', 'r')
