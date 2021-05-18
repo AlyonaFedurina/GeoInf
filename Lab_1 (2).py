@@ -110,9 +110,9 @@ for i in range(minutes):
     latitude_radians = deg_to_rad(latitude)
     longitude_radians = deg_to_rad(longitude)
     x, y, z = sph_to_dec(height + R, latitude_radians, longitude_radians)
-    array_x.append(x)
-    array_y.append(y)
-    array_z.append(z)
+    arr_x.append(x)
+    arr_y.append(y)
+    arr_z.append(z)
     Sat_V, Sat_V_L = set_v(x_LK, y_LK, z_LK, x, y, z)
     dist_to_P = dist_to_plane(x_LK, y_LK, z_LK, x, y, z)
     dist_to_Sat = ((x - x_LK) ** 2 + (y - y_LK) ** 2 + (z - z_LK) ** 2) ** 0.5
@@ -127,44 +127,44 @@ for i in range(minutes):
         if 3 * np.pi / 2 >= angle_v1_v2(East_V, Sat_V_Pr, East_V_L, Sat_V_Pr_L) > np.pi / 2:
             azimuth = 2 * np.pi - azimuth
     elevation = rad_to_deg(elevation)
-    array_azimuth.append(azimuth)
+    arr_azimuth.append(azimuth)
 
-    array_elevation.append(elevation)
+    arr_elevation.append(elevation)
 
-for i in range(len(array_time)):
-    if 180 >= array_elevation[i] >= 0:
-        temporary_elevation_data.append(array_elevation[i])
-        temporary_azimuth_data.append(array_azimuth[i])
-        temporary_time_data.append(array_time[i])
+for i in range(len(arr_time)):
+    if 180 >= arr_elevation[i] >= 0:
+        tmp_elevation_data.append(arr_elevation[i])
+        tmp_azimuth_data.append(arr_azimuth[i])
+        tmp_time_data.append(arr_time[i])
     else:
-        if len(temporary_elevation_data) != 0:
-            array_usual_time.append(temporary_time_data)
-            array_usual_azimuth.append(temporary_azimuth_data)
-            array_usual_elevation.append(temporary_elevation_data)
-        temporary_elevation_data = []
-        temporary_azimuth_data = []
-        temporary_time_data = []
+        if len(tmp_elevation_data) != 0:
+            arr_usual_time.append(tmp_time_data)
+            arr_usual_azimuth.append(tmp_azimuth_data)
+            arr_usual_elevation.append(tmp_elevation_data)
+        tmp_elevation_data = []
+        tmp_azimuth_data = []
+        tmp_time_data = []
 
-for i in range(len(array_usual_time)):
-    print("[ Time: ", array_usual_time[i][0], "] [ Azimuth: ", rad_to_deg(array_usual_azimuth[i][0]), "] [ Elevation: ",
-          max(array_usual_elevation[i]), "]")
+for i in range(len(arr_usual_time)):
+    print("[ Time: ", arr_usual_time[i][0], "] [ Azimuth: ", rad_to_deg(arr_usual_azimuth[i][0]), "] [ Elevation: ",
+          max(arr_usual_elevation[i]), "]")
 
-print(array_usual_elevation)
-print(array_usual_azimuth)
+print(arr_usual_elevation)
+print(arr_usual_azimuth)
 
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='polar')
 ax.set_theta_zero_location('N')
 ax.set_theta_direction(-1)
 ax.set_rlim(bottom=90, top=0)
-for phi, theta in zip(array_usual_azimuth, array_usual_elevation):
+for phi, theta in zip(arr_usual_azimuth, arr_usual_elevation):
     ax.plot(phi, theta)
 fig.set_size_inches(7, 7)
 plt.show()
 
 sf = plt.figure()
 ax = sf.add_subplot(111, projection='3d')
-ax.plot(array_x, array_y, array_z)
+ax.plot(arr_x, arr_y, arr_z)
 ax.scatter(x_LK, y_LK, z_LK, color='black')
 sf.set_size_inches(7, 7)
 plt.show()
