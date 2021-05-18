@@ -10,83 +10,79 @@ def deg_to_rad(value):
     return (value * np.pi) / 180
 
 #Переводим в градусы
-def to_degrees(value):
+def rad_to_deg(value):
     return (value * 180) / np.pi
 
 #Переводим из сферических в декартовы координаты
-def to_decarts(r, theta, phi):
-    x = r * m.cos(theta) * m.cos(phi)
-    y = r * m.cos(theta) * m.sin(phi)
-    z = r * m.sin(theta)
-    return x, y, z
-
-#Считаем угол между векторами
-def angle_V1_V2(V1, V2, V1_length, V2_length):
-    return m.acos((V1[0] * V2[0] + V1[1] * V2[1] + V1[2] * V2[2]) / (V1_length * V2_length))
-
-#Считаем скалярное произведение векторов
-def scalar_pr(V1, V2):
-    return V1[0] * V2[0] + V1[1] * V2[1] + V1[2] * V2[2]
+def sph_to_dec(r, theta, phi):
+    return r * m.cos(theta) * m.cos(phi), r * m.cos(theta) * m.sin(phi), r * m.sin(theta)
 
 #Функция, задающая вектор посредством его координат и длины
-def set_V(x1, y1, z1, x2, y2, z2):
-    V = [x2 - x1, y2 - y1, z2 - z1]
-    V_length = m.sqrt(V[0] ** 2 + V[1] ** 2 + V[2] ** 2)
-    return V, V_length
+def set_v(x1, y1, z1, x2, y2, z2):
+    v = [x2 - x1, y2 - y1, z2 - z1]
+    v_length = m.sqrt(V[0] ** 2 + V[1] ** 2 + V[2] ** 2)
+    return v, v_length
+
+#Считаем угол между векторами
+def angle_v1.v2(v1, v2, v1_length, v2_length):
+    return m.acos((v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2]) / (v1_length * v2_length))
+
+#Считаем скалярное произведение векторов
+def sc_pr(v1, v2):
+    return v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2]
 
  #Получаем долготу, широту, высоту над Землёй спутника
-def get_satellite_data(tle_1, tle_2, utc_time):
+def get_stll_lo.la.he(tle_1, tle_2, utc_time):
     orb = Orbital("N", line1=tle_1, line2=tle_2)
-    lon, lat, height_st = orb.get_lonlatalt(utc_time)
-    return lon, lat, height_st
+    lo, lt, he = orb.get_lonlatalt(utc_time)
+    return lo, la, he
 
 #Получаем TLE
-def get_tle(file_with_tle, satellite_name):
+def get_TLE(file_with_tle, stll_name):
     record = requests.get(file_with_tle, stream=True)
     open('TLE.txt', 'wb').write(record.text)
     file = open('TLE.txt', 'r')
     temporary = file.read().split("\n")[:-1]
     for i in range(len(temporary)):
-        if temporary[i] == satellite_name:
-            return [satellite_name, temporary[i + 1], temporary[i + 2]]
+        if temporary[i] == stll_name:
+            return [s tll_name, temporary[i + 1], temporary[i + 2]]
 
 #Посчитаем расстояние от точки вне сферы до касательной
-def dist_to_PL(x1, y1, z1, x2, y2, z2):
-    D = -x1 ** 2 - y1 ** 2 - z1 ** 2
-    dif = (x1 * x2 + y1 * y2 + z1 * z2 + D) / ((x1 ** 2 + y1 ** 2 + z1 ** 2) ** 0.5)
-    return dif
+def dist_to_plane(x1, y1, z1, x2, y2, z2):
+    dist = (x1 * x2 + y1 * y2 + z1 * z2 - x1 ** 2 - y1 ** 2 - z1 ** 2 ) / ((x1 ** 2 + y1 ** 2 + z1 ** 2) ** 0.5)
+    return dist
 
 
-h_LK = 0.197 #высота ЛК над морем
+he_LK = 0.197 #высота ЛК над морем
 R = 6378.1375 #радиус Земли
-latitude_LK_R = to_radians(55.928895) #широта ЛК
-longitude_LK_R = to_radians(37.521498) #долгота ЛК
-x_LK, y_LK, z_LK = to_decarts(R + h_LK, latitude_LK_R,
-                              longitude_LK_R) #координаты ЛК в декартовой системе
+la_LK_R = deg_to_rad(55.930096) #широта ЛК
+lo_LK_R = deg_to_rad(37.517872) #долгота ЛК
+x_LK, y_LK, z_LK = sph_to_dec(R + he_LK, la_LK_R,
+                              lo_LK_R) #координаты ЛК в декартовой системе
 
-D = -(x_LK ** 2 + y_LK ** 2 + z_LK ** 2) #свободный член в уравнении касательной плоскости
-z_P = -D / z_LK
-y_P = -D / y_LK
-x_P = -D / x_LK
-North_V, North_V_L = set_V(0, 0, z_P, x_LK, y_LK, z_LK)
+D = (x_LK ** 2 + y_LK ** 2 + z_LK ** 2) #свободный член в уравнении касательной плоскости
+z_pl = D / z_LK
+y_pl = D / y_LK
+x_pl = D / x_LK
+North_V, North_V_L = set_V(0, 0, z_pl, x_LK, y_LK, z_LK)
 Normal_V, Normal_V_L = set_V(0, 0, 0, x_LK, y_LK, z_LK)
 East_V, East_V_L = set_V(0, 0, 0, North_V[1] * Normal_V[2] - Normal_V[1] * North_V[2],
                          -(North_V[0] * Normal_V[2] - North_V[2] * Normal_V[0]),
                          North_V[0] * Normal_V[1] - Normal_V[0] * North_V[1])
 
 #Списки
-array_x = []
-array_y = []
-array_z = []
-array_time = []
-array_elevation = []
-array_azimuth = []
-array_usual_elevation = []
-array_usual_azimuth = []
-array_usual_time = []
-temporary_elevation_data = []
-temporary_azimuth_data = []
-temporary_time_data = []
+arr_x = []
+arr_y = []
+arr_z = []
+arr_time = []
+arr_elevation = []
+arr_azimuth = []
+arr_usual_elevation = []
+arr_usual_azimuth = []
+arr_usual_time = []
+tmp_elevtion_data = []
+tmp_azimuth_data = []
+tmp_time_data = []
 
 list_tle = get_tle("https://celestrak.com/NORAD/elements/active.txt", "NOAA 19                 ")
 print(list_tle)
